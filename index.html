@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Location Tracker</title>
+</head>
+<body>
+  <h2>Location Permission Test</h2>
+  <p>This page will ask for your location.</p>
+  <button onclick="getLocation()">Share My Location</button>
+
+  <script>
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sendLocation, showError);
+      } else {
+        alert("Geolocation is not supported.");
+      }
+    }
+
+    function sendLocation(position) {
+      const data = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      };
+
+      fetch('https://your-backend-url.com/receive', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.text())
+      .then(msg => {
+        alert(msg);
+        // Optional: Show on Google Maps
+        window.open(`https://www.google.com/maps?q=${data.latitude},${data.longitude}`);
+      })
+      .catch(err => console.error('Error sending:', err));
+    }
+
+    function showError(error) {
+      alert("Error getting location: " + error.message);
+    }
+  </script>
+</body>
+</html>
